@@ -1,17 +1,28 @@
-Local lnProj, loProject
+Local lnCount, lnI, loActiveProject, loActiveProjectName, loProject
 
-ADDPROPERTY(_SCREEN,"aThorCFUProjects(1,2)")
-IF _VFP.PROJECTS.COUNT>0 THEN
- DIMENSION;
-  _SCREEN.aThorCFUProjects(_VFP.PROJECTS.COUNT,2)
-ENDIF &&_VFP.PROJECTS.COUNT>0
-_SCREEN.aThorCFUProjects = ""
+lnCount = _vfp.Projects.Count
+If m.lnCount > 0
 
-lnProj     = 0
-FOR EACH m.loProject IN _VFP.PROJECTS FOXOBJECT
- lnProj							= m.lnProj+1
- _SCREEN.aThorCFUProjects(m.lnProj,1)	= m.loProject.NAME
- _SCREEN.aThorCFUProjects(m.lnProj,2)	= m.loProject.VISIBLE
-ENDFOR &&loProject
- 
- 
+	_Screen.AddProperty('aThorCFUProjects(lnCount, 3)')
+
+	loActiveProjectName = Upper(_vfp.ActiveProject.Name)
+
+	For lnI = 1 To m.lnCount
+		loProject = _vfp.Projects[m.lnI]
+
+		_Screen.aThorCFUProjects(m.lnI, 1) = m.loProject.Name
+		_Screen.aThorCFUProjects(m.lnI, 2) = m.loProject.Visible
+		_Screen.aThorCFUProjects(m.lnI, 3) = Upper(m.loProject.Name) == m.loActiveProjectName
+	Endfor
+
+	Asort(_Screen.aThorCFUProjects, 3)
+
+	loActiveProject	= Null
+	loProject		= Null
+
+Else
+
+	Removeproperty(_Screen, 'aThorCFUProjects')
+
+Endif
+
